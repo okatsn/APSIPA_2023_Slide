@@ -1,0 +1,438 @@
+---
+title: "Random forest in the estimation of soil water content and hydrodynamics behind"
+subtitle: "Using Classification and Regression Tree as weak learner based on meteorological inputs"
+execute: 
+    eval: false # by default don't evaluate cell
+    echo: true # echo source code to doc
+date: 2023-11-03
+# title-slide-attributes: 
+#     data-background-image: background1.png
+#     data-background-size: cover # try cover, contain
+#     data-background-opacity: "0.5"
+author: 
+  - name: Tsung-Hsi, Wu
+  - name: Pei-Yuan Chen
+    affiliation: National Central University
+  - name: Chien-Chih Chen
+    affiliation: National Central University
+  - name: Meng-Ju Chung
+    affiliation: National Central University
+  - name: Zheng-Kai Ye
+  - name: Ming-Hsu Li
+    affiliation: National Central University
+institute: National Central University
+jupyter: julia-1.9
+bibliography: main.bib
+format: 
+    revealjs:
+        width: 1600
+        height: 900
+        theme: [simple,custom.scss] # https://quarto.org/docs/presentations/revealjs/#themes
+        logo: Fig_logo_bar_ncu.png
+        preview-links: auto
+        slide-number: true
+        toc: true
+        toc-title: Outline
+        toc-depth: 2
+        parallax-background-image: background1.png
+        parallax-background-size: "1920px 1200px"
+        parallax-background-horizontal: 20
+        parallax-background-vertical: 20
+
+---
+
+
+# Introduction
+
+
+<!-- 
+# CHECKPOINT
+Outline on [Face-To-Face Presentation Guidelines](https://www.apsipa2023.org/pguideline.html)
+- 15 minutes; 12 talk + 3Q&A is suggested.
+- At least be there 15 minutes before the session.
+- resolution is 1024 X 768 -->
+
+<!-- ## About me
+
+I'm Tsung-Hsi, Wu (吳宗羲)
+
+- **Affiliation**: National Central University, a PhD. student.
+- **Expertise**: geophysics; earthquake dynamics; stochastic process
+- **Hobby**: programming with julia
+- **Contact me**: https://github.com/okatsn
+
+![](AboutMe_causual.jpg){.absolute bottom=50 right=0 width=400} -->
+
+
+
+
+## Overview of soil water content (SWC) estimation {.scrollable}
+
+### Importance of SWC estimation
+
+- Enhance agricultural practices
+- Water resource optimization
+- Efficient urban green space management
+- Flood risk assessment
+
+### Conventional approaches
+
+#### Direct measurement
+
+- gravimetric method ^[@reynoldsGravimetricMethodSoil1970], the nuclear resonance method ^[@hendricksNuclearMagneticResonance1999,@Dawson2017BoreholeNM,@SHEN2019OptimizedInsideOutNMR]
+
+<!-- which involves drying soil samples and measuring the weight loss -->
+<!-- , which measures the interaction of water molecules with a magnetic field -->
+#### Indirect measurements (Monitoring)
+
+- resistivity methods ^[@Brunet2010MonitoringSW], tension methods ^[@bittelliMeasuringSoilWater2010,@shekharSoilMoistureProfile2017], dielectric methods ^[@Tokov2019MeasurementOV,@Sparks2022AReviewTDR,@Robinson2023AReviewTDR], and fiber optic sensing ^[@Cosenza2016IndirectDO,@aldabaMicrostructuredOpticalFiber2018,@sunDevelopmentApplicationFiberOptic2022]
+
+
+## Machine learning in SWC measurement {.scrollable}
+
+Due to economic and deployment reasons, in-situ SWC monitoring is generally spatially sparse.
+Therefore, physically based numerical models and data-driven models are required on one hand to fill gaps in SWC measurement instrumentation.
+
+### Role:
+
+- forecasting
+- interpolation
+
+
+### PROs:
+
+- Speed: fast in making a prediction
+- Flexibility: require much less detailed and comprehensive hydraulic parameters
+
+<!-- ML models can be trained on more diverse data sources without the need for explicit boundary conditions and initial conditions. -->
+
+### CONs:
+
+- Interpretability: lack physics-based and mechanistic understanding
+
+
+
+
+
+## In this study
+
+We use Classification And Regression Tree (CART), aiming for
+
+- investigating the feasibility of using the Classification and Regression Tree (CART) algorithm in SWC estimation
+- training and validation of CART models using **meteorological data**^[such as precipitation, air temperature and pressure] from a grassland terrain in northern Taiwan
+
+### Why we choose CART
+
+- In soil water estimation, the top-performing models are mostly 
+  - Artificial Neural Network (ANN) 
+  - CART-based models, such as Random Forest, Gradient Boosted Trees
+- Intrinsic ability for feature selection
+- Provide inherent feature importance metrics such as impurity decrease
+
+<!-- It is often chosen as the weak learner for ensemble learning, such as random forests, and gradient boosting machines, such as XGBoost \citep{ChenXGBoost2016}, which have dominated Kaggle competitions in recent years \citep{bentejacComparativeAnalysisGradient2021}. -->
+
+<!-- CART is chosen for its simplicity, intrinsic feature selection ability, and extensibility to more sophisticated tree algorithms like RF and boosted trees. -->
+
+## The study area and dataset {.scrollable}
+
+:::: {.columns}
+
+::: {.column width="60%"}
+### Input features
+
+- precipitation
+- air-temperature
+- solar radiation
+- pressure
+- windspeed
+- humidity
+
+#### Time shifting
+
+- $t_i, i = 0 ,-12, -24, -36, -48, -60, -72, -84, -96$
+
+#### Target features
+
+- SWC of depths from 10 to 100 cm 
+- one hour ($t_{+1}$) in the future
+
+:::
+
+::: {.column width="40%"}
+
+#### Site
+
+![@ncusurfacehydrologylabAerialView](Fig_site_ncutower.png)
+
+![@ichiehEffectsEvapotranspirationInfiltration2019](Fig_rock_sample.png)
+
+:::
+::::
+
+# Research Methodology 
+
+## 12-fold Time-Series Cross-validation (TSCV)
+
+
+![](MissingData_TrainTestPartitions.png)
+
+
+- training & testing dataset always contains consecutive data points
+- testing fold always occurs after the training fold
+- more representative of how the model will be used in realistic deployments
+
+
+## Machine Learning Algorithm & Framework {.scrollable}
+
+### Classification And Regression Tree (CART)
+
+provided by [JuliaAI/DecisionTree.jl](https://github.com/JuliaAI/DecisionTree.jl).
+
+Regression tree:
+
+- is a supervised ML method capable for time-series forecasting; 
+- is constructed by minimizing MSE^[mean squared error] by recursively creating binary branches; 
+
+$$
+    \min_{j, s}[\min_{c_L} \displaystyle\sum_{x_i \in R_L(j,s)}(y_i-c_L)^2 +
+        \min_{c_R} \displaystyle\sum_{x_i \in R_R(j,s)}(y_i-c_R)^2 ]
+$$
+
+![](Fig_tree_visual_example.png){width=85%}
+
+
+- is also a widely applied feature analysis/selection tool.
+
+
+### Random Forest
+
+Ensemble model of CART built with [MLJ](https://alan-turing-institute.github.io/MLJ.jl/).
+
+- 100 CART per model
+- bagging ratio = 0.8
+
+
+# Results & Discussion
+
+## Effectiveness of Random Forest in SWC Estimation{.scrollable}
+:::: {layout-ncol="2"}
+![](Fig_Timeseries_every_depth_TimeSeriesCV_with_P.png)
+
+::: {layout-nrow="2"}
+![](Fig_lossMAE_every_depthxfold_TimeSeriesCV.png)
+
+- Model failed when transiting from dry to wet season (large MAE in $8_{th}$ fold for SWC of depths $\geq 70$ cm)
+- Model failed to give predictions that are not in the training data (large MAE in $3_{th}$ fold for SWC of depths $> 10$ cm)
+:::
+
+::::
+
+For the rest of models, MAE $\leq 4 \% (V/V)$ 
+
+- Overestimating SWC by 4 % for SWC at 10 cm results in an 8 mm or around 7.2 tons of water deficit per 0.1 hectare farmland; 7.2 tons is 7.2 ‰ of water demand for rice per 0.1 hectare, while the water demands of soybeans and wheat are $\frac{1}{2}$ and $\frac{1}{10}$ of that for rice, respectively.
+- It indicates that **the continuous estimation error of more than 20 days may start to influence rice production**, which manifests the value of the estimated SWC information in this study.
+
+## Making finer and more stable prediction with Random Forest {.scrollable}
+MAE of ten sets of input feature
+(From left to right of the x axis)
+
+::: {layout-ncol="2"}
+![](MAE_forest_scatter.png)
+
+
+
+
+::: {layout-ncol="1"}
+
+> [1] without _hour_
+> 
+> [2] without _wind speed_
+> 
+> [3] without _solar radiation_
+> 
+> [4] without _humidity_
+> 
+> [5] without _pressure_
+> 
+> [6] without _air temperature_
+> 
+> [7] without _precipitation_
+> 
+> [8] without _AP parameters_
+> 
+> [9] with all parameters
+> 
+> [10] with only AP and P parameters
+:::
+
+:::
+
+- comparing the results with CART and Random Forest
+- result shows minor but comprehensive improvements for all feature sets
+
+
+
+
+## Underlying hydrodynamics revealed by CART {.scrollable}
+
+### Importance of input features
+
+Assessing responsiveness of SWC to precipitation using TDNI and TNNS
+
+- *TDNI*: Total Decrease in Node Impurity
+- *TNNS*: Total Number of Node Splits
+
+> *AP & P parameters*: Accumulated Precipitation (10-minutes, 1-hr, 12-hr, 1-day, 2-day, 3-day)
+>
+> *NP parameters*: temperature, humidity, pressure, solar radiation, wind speed
+
+<!-- 
+![](ManyImportance_by_APP_NP.png)
+
+Low TDNI of AP & P in dry season 
+
+- In wet season, SWC of all depths response promptly to small rainfalls
+- In dry season, SWC of deeper depths barely response to small rainfalls
+
+High TNNS of NP for all seasons
+
+- In wet season, NP parameters help in making finer predictions (near leaf)
+- In dry season, NP parameters makes critical decisions in a tree (near root) -->
+
+:::: {layout-ncol="2"}
+
+![](ManyImportance_by_APP_NP.png)
+
+::: {layout-ncol="1"}
+Low TDNI of AP & P in dry season 
+
+- In wet season, SWC of all depths response promptly to small rainfalls
+- In dry season, SWC of deeper depths barely response to small rainfalls
+
+High TNNS of NP for all seasons
+
+- In wet season, NP parameters help in making finer predictions (near leaf)
+- In dry season, NP parameters makes critical decisions in a tree (near root)
+:::
+::::
+
+
+### SWC responsiveness inferred by in-situ evidences 
+
+We examine the results of feature analysis using CART's feature importance metrics:
+
+::::{.columns}::::
+:::{.column width='40%'}
+
+(A wet event)
+
+![](SWC_wet_event.png)
+
+- SWC of deeper depths saturate faster
+
+:::
+:::{.column width='60%'}
+
+(A long drying event)
+
+![](SWC_dry_event.png)
+
+- Evapotranspiration affects more on SWC of shallow depths
+
+:::
+::::
+
+From the rock core samples:
+
+![](Fig_rock_sample2.png){width=70%}
+
+- fine grains in the topsoil ($\leq 10 cm$) ➡️ High water retention ability
+- coarse grain in the middle layer ($30 - 70$ cm) ➡️ Preferential flow in the mid-layer
+
+
+
+
+
+
+## [TWAISWCF.jl](https://okatsn.github.io/TWAISWCF/dev/) {.scrollable preview-link="true"}
+
+- A Framework for soil-water content estimation & forecasting, in compatible with [MLJ](https://alan-turing-institute.github.io/MLJ.jl/) and [DataFrames.jl](https://dataframes.juliadata.org/stable/).
+- A TWAI$^1$ subproject funded by NSTC$^2$
+
+> $1.$ TaiWan AI-based Management Strategy, for Earth and Environmental Disasters
+> 
+> $2.$ National Science and Technology Council
+
+- ![](Fig_TWAISWCF_overview.png)
+
+
+### Aims
+
+
+
+- Soil-water content (SWC) estimation for agricultural purposes
+
+### Current status
+
+- Nowcasts of SWC with acceptable error levels using readily available atmospheric parameters
+- Only single site
+
+
+
+
+
+
+
+
+# Conclusion
+
+## Brief summary {.scrollable}
+
+- CART alone provides SWC predictions with acceptable error for some agricultural purposes.
+- Random Forest brings minor but comprehensive improvements.
+- Feature importance analysis can be used to quantify the responsiveness of SWC to specific meteorological parameters.
+
+
+
+
+## Future work
+
+- Using three-day rainfall forecast
+- Joint-station SWC estimation
+
+
+
+
+
+
+
+
+---
+
+- Resources for this subject of TWAI:
+  - [Introduction and demonstration](https://ncuihoswiselab.wixsite.com/twai-swcpredi)
+  - [Prototype of interactive UI for SWC prediction](http://203.145.218.18:3000/)
+
+
+
+## References {.appendix}
+<!-- A page of no title -->
+
+### Acknowledgement
+
+The authors of the manuscript gratefully acknowledge the laboratories providing valuable data, namely the Surface Hydrology Lab., Aerosol and Cloud Lab., and Planetary Boundary Layer and Air Pollution Lab. of National Central University.
+The authors also would like to express their gratitude to the National Science and Technology Council (R.O.C) for providing funding for this research through grant number MOST 110-2634-F-008-008 and 111-2634-F-008-001.
+
+
+### Appendix 
+
+- [Application of Julia in the Study](https://okatsn.github.io/COSCUP_2023_Slides/about_twaiswcf/#/application-of-julia-in-the-study){preview-link="true"}
+
+
+### References
+
+
+
+:::{.footer style="font-size: 210%;"}
+Thank you for listening
+:::

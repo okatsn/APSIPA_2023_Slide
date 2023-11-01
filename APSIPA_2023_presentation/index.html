@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/tabby.min.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.3.433">
+
+  <meta name="author" content="Tsung-Hsi, Wu">
+  <meta name="author" content="Pei-Yuan Chen">
+  <meta name="author" content="Chien-Chih Chen">
+  <meta name="author" content="Meng-Ju Chung">
+  <meta name="author" content="Zheng-Kai Ye">
+  <meta name="author" content="Ming-Hsu Li">
+  <meta name="dcterms.date" content="2023-11-03">
+  <title>Random forest in the estimation of soil water content and hydrodynamics behind</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    margin-bottom: 0.5rem;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Random forest in the estimation of soil water content and hydrodynamics behind</h1>
+  <p class="subtitle">Using Classification and Regression Tree as weak learner based on meteorological inputs</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Tsung-Hsi, Wu 
+</div>
+        <p class="quarto-title-affiliation">
+            National Central University
+          </p>
+    </div>
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Pei-Yuan Chen 
+</div>
+        <p class="quarto-title-affiliation">
+            National Central University
+          </p>
+    </div>
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Chien-Chih Chen 
+</div>
+        <p class="quarto-title-affiliation">
+            National Central University
+          </p>
+    </div>
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Meng-Ju Chung 
+</div>
+        <p class="quarto-title-affiliation">
+            National Central University
+          </p>
+    </div>
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Zheng-Kai Ye 
+</div>
+</div>
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Ming-Hsu Li 
+</div>
+        <p class="quarto-title-affiliation">
+            National Central University
+          </p>
+    </div>
+</div>
+
+  <p class="date">2023-11-03</p>
+</section><section id="TOC">
+<nav role="doc-toc"> 
+<h2 id="toc-title">Outline</h2>
+<ul>
+<li><a href="#/introduction" id="/toc-introduction">Introduction</a>
+<ul>
+<li><a href="#/overview-of-soil-water-content-swc-estimation" id="/toc-overview-of-soil-water-content-swc-estimation">Overview of soil water content (SWC) estimation</a></li>
+<li><a href="#/machine-learning-in-swc-measurement" id="/toc-machine-learning-in-swc-measurement">Machine learning in SWC measurement</a></li>
+<li><a href="#/in-this-study" id="/toc-in-this-study">In this study</a></li>
+<li><a href="#/the-study-area-and-dataset" id="/toc-the-study-area-and-dataset">The study area and dataset</a></li>
+</ul></li>
+<li><a href="#/research-methodology" id="/toc-research-methodology">Research Methodology</a>
+<ul>
+<li><a href="#/fold-time-series-cross-validation-tscv" id="/toc-fold-time-series-cross-validation-tscv">12-fold Time-Series Cross-validation (TSCV)</a></li>
+<li><a href="#/machine-learning-algorithm-framework" id="/toc-machine-learning-algorithm-framework">Machine Learning Algorithm &amp; Framework</a></li>
+</ul></li>
+<li><a href="#/results-discussion" id="/toc-results-discussion">Results &amp; Discussion</a>
+<ul>
+<li><a href="#/effectiveness-of-random-forest-in-swc-estimation" id="/toc-effectiveness-of-random-forest-in-swc-estimation">Effectiveness of Random Forest in SWC Estimation</a></li>
+<li><a href="#/making-finer-and-more-stable-prediction-with-random-forest" id="/toc-making-finer-and-more-stable-prediction-with-random-forest">Making finer and more stable prediction with Random Forest</a></li>
+<li><a href="#/underlying-hydrodynamics-revealed-by-cart" id="/toc-underlying-hydrodynamics-revealed-by-cart">Underlying hydrodynamics revealed by CART</a></li>
+<li><a href="#/twaiswcf.jl" id="/toc-twaiswcf.jl">TWAISWCF.jl</a></li>
+</ul></li>
+<li><a href="#/conclusion" id="/toc-conclusion">Conclusion</a>
+<ul>
+<li><a href="#/brief-summary" id="/toc-brief-summary">Brief summary</a></li>
+<li><a href="#/future-work" id="/toc-future-work">Future work</a></li>
+<li></li>
+<li><a href="#/references" id="/toc-references">References</a></li>
+</ul></li>
+</ul>
+</nav>
+</section>
+<section>
+<section id="introduction" class="title-slide slide level1 center">
+<h1>Introduction</h1>
+<!-- 
+# CHECKPOINT
+Outline on [Face-To-Face Presentation Guidelines](https://www.apsipa2023.org/pguideline.html)
+- 15 minutes; 12 talk + 3Q&A is suggested.
+- At least be there 15 minutes before the session.
+- resolution is 1024 X 768 -->
+<!-- ## About me
+
+I'm Tsung-Hsi, Wu (吳宗羲)
+
+- **Affiliation**: National Central University, a PhD. student.
+- **Expertise**: geophysics; earthquake dynamics; stochastic process
+- **Hobby**: programming with julia
+- **Contact me**: https://github.com/okatsn
+
+![](AboutMe_causual.jpg){.absolute bottom=50 right=0 width=400} -->
+</section>
+<section id="overview-of-soil-water-content-swc-estimation" class="slide level2 scrollable">
+<h2>Overview of soil water content (SWC) estimation</h2>
+<h3 id="importance-of-swc-estimation">Importance of SWC estimation</h3>
+<ul>
+<li>Enhance agricultural practices</li>
+<li>Water resource optimization</li>
+<li>Efficient urban green space management</li>
+<li>Flood risk assessment</li>
+</ul>
+<h3 id="conventional-approaches">Conventional approaches</h3>
+<h4 id="direct-measurement">Direct measurement</h4>
+<ul>
+<li>gravimetric method <sup>1</sup>, the nuclear resonance method <sup>2</sup></li>
+</ul>
+<!-- which involves drying soil samples and measuring the weight loss -->
+<!-- , which measures the interaction of water molecules with a magnetic field -->
+<h4 id="indirect-measurements-monitoring">Indirect measurements (Monitoring)</h4>
+<ul>
+<li>resistivity methods <sup>3</sup>, tension methods <sup>4</sup>, dielectric methods <sup>5</sup>, and fiber optic sensing <sup>6</sup></li>
+</ul>
+<aside><ol class="aside-footnotes"><li id="fn1"><p><span class="citation" data-cites="reynoldsGravimetricMethodSoil1970">Reynolds (<a href="#/references" role="doc-biblioref" onclick="">1970</a>)</span></p></li><li id="fn2"><p><span class="citation" data-cites="hendricksNuclearMagneticResonance1999">J. Hendricks, T. Yao, and A. Kearns (<a href="#/references" role="doc-biblioref" onclick="">1999</a>)</span>,<span class="citation" data-cites="Dawson2017BoreholeNM">Dawson et al. (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span>,<span class="citation" data-cites="SHEN2019OptimizedInsideOutNMR">Shen et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span></p></li><li id="fn3"><p><span class="citation" data-cites="Brunet2010MonitoringSW">Brunet, Clément, and Bouvier (<a href="#/references" role="doc-biblioref" onclick="">2010</a>)</span></p></li><li id="fn4"><p><span class="citation" data-cites="bittelliMeasuringSoilWater2010">Bittelli (<a href="#/references" role="doc-biblioref" onclick="">2010</a>)</span>,<span class="citation" data-cites="shekharSoilMoistureProfile2017">Shekhar et al. (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span></p></li><li id="fn5"><p><span class="citation" data-cites="Tokov2019MeasurementOV">Toková, Igaz, and Aydın (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span>,<span class="citation" data-cites="Sparks2022AReviewTDR">He et al. (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span>,<span class="citation" data-cites="Robinson2023AReviewTDR">Robinson et al. (<a href="#/references" role="doc-biblioref" onclick="">2003</a>)</span></p></li><li id="fn6"><p><span class="citation" data-cites="Cosenza2016IndirectDO">Cosenza (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span>,<span class="citation" data-cites="aldabaMicrostructuredOpticalFiber2018">Aldaba et al. (<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span>,<span class="citation" data-cites="sunDevelopmentApplicationFiberOptic2022">Sun et al. (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span></p></li></ol></aside></section>
+<section id="machine-learning-in-swc-measurement" class="slide level2 scrollable">
+<h2>Machine learning in SWC measurement</h2>
+<p>Due to economic and deployment reasons, in-situ SWC monitoring is generally spatially sparse. Therefore, physically based numerical models and data-driven models are required on one hand to fill gaps in SWC measurement instrumentation.</p>
+<h3 id="role">Role:</h3>
+<ul>
+<li>forecasting</li>
+<li>interpolation</li>
+</ul>
+<h3 id="pros">PROs:</h3>
+<ul>
+<li>Speed: fast in making a prediction</li>
+<li>Flexibility: require much less detailed and comprehensive hydraulic parameters</li>
+</ul>
+<!-- ML models can be trained on more diverse data sources without the need for explicit boundary conditions and initial conditions. -->
+<h3 id="cons">CONs:</h3>
+<ul>
+<li>Interpretability: lack physics-based and mechanistic understanding</li>
+</ul>
+</section>
+<section id="in-this-study" class="slide level2">
+<h2>In this study</h2>
+<p>We use Classification And Regression Tree (CART), aiming for</p>
+<ul>
+<li>investigating the feasibility of using the Classification and Regression Tree (CART) algorithm in SWC estimation</li>
+<li>training and validation of CART models using <strong>meteorological data</strong><sup>1</sup> from a grassland terrain in northern Taiwan</li>
+</ul>
+<h3 id="why-we-choose-cart">Why we choose CART</h3>
+<ul>
+<li>In soil water estimation, the top-performing models are mostly
+<ul>
+<li>Artificial Neural Network (ANN)</li>
+<li>CART-based models, such as Random Forest, Gradient Boosted Trees</li>
+</ul></li>
+<li>Intrinsic ability for feature selection</li>
+<li>Provide inherent feature importance metrics such as impurity decrease</li>
+</ul>
+<!-- It is often chosen as the weak learner for ensemble learning, such as random forests, and gradient boosting machines, such as XGBoost \citep{ChenXGBoost2016}, which have dominated Kaggle competitions in recent years \citep{bentejacComparativeAnalysisGradient2021}. -->
+<!-- CART is chosen for its simplicity, intrinsic feature selection ability, and extensibility to more sophisticated tree algorithms like RF and boosted trees. -->
+<aside><ol class="aside-footnotes"><li id="fn7"><p>such as precipitation, air temperature and pressure</p></li></ol></aside></section>
+<section id="the-study-area-and-dataset" class="slide level2 scrollable">
+<h2>The study area and dataset</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<h3 id="input-features">Input features</h3>
+<ul>
+<li>precipitation</li>
+<li>air-temperature</li>
+<li>solar radiation</li>
+<li>pressure</li>
+<li>windspeed</li>
+<li>humidity</li>
+</ul>
+<h4 id="time-shifting">Time shifting</h4>
+<ul>
+<li><span class="math inline">\(t_i, i = 0 ,-12, -24, -36, -48, -60, -72, -84, -96\)</span></li>
+</ul>
+<h4 id="target-features">Target features</h4>
+<ul>
+<li>SWC of depths from 10 to 100 cm</li>
+<li>one hour (<span class="math inline">\(t_{+1}\)</span>) in the future</li>
+</ul>
+</div><div class="column" style="width:40%;">
+<h4 id="site">Site</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Fig_site_ncutower.png"></p>
+<figcaption><span class="citation" data-cites="ncusurfacehydrologylabAerialView">Surface Hydrology Lab. of NCU (<a href="#/references" role="doc-biblioref" onclick="">n.d.</a>)</span></figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Fig_rock_sample.png"></p>
+<figcaption><span class="citation" data-cites="ichiehEffectsEvapotranspirationInfiltration2019">Tseng (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="research-methodology" class="title-slide slide level1 center">
+<h1>Research Methodology</h1>
+
+</section>
+<section id="fold-time-series-cross-validation-tscv" class="slide level2">
+<h2>12-fold Time-Series Cross-validation (TSCV)</h2>
+
+<img data-src="MissingData_TrainTestPartitions.png" class="r-stretch"><ul>
+<li>training &amp; testing dataset always contains consecutive data points</li>
+<li>testing fold always occurs after the training fold</li>
+<li>more representative of how the model will be used in realistic deployments</li>
+</ul>
+</section>
+<section id="machine-learning-algorithm-framework" class="slide level2 scrollable">
+<h2>Machine Learning Algorithm &amp; Framework</h2>
+<h3 id="classification-and-regression-tree-cart">Classification And Regression Tree (CART)</h3>
+<p>provided by <a href="https://github.com/JuliaAI/DecisionTree.jl">JuliaAI/DecisionTree.jl</a>.</p>
+<p>Regression tree:</p>
+<ul>
+<li>is a supervised ML method capable for time-series forecasting;</li>
+<li>is constructed by minimizing MSE<sup>1</sup> by recursively creating binary branches;</li>
+</ul>
+<p><span class="math display">\[
+    \min_{j, s}[\min_{c_L} \displaystyle\sum_{x_i \in R_L(j,s)}(y_i-c_L)^2 +
+        \min_{c_R} \displaystyle\sum_{x_i \in R_R(j,s)}(y_i-c_R)^2 ]
+\]</span></p>
+<p><img data-src="Fig_tree_visual_example.png" style="width:85.0%"></p>
+<ul>
+<li>is also a widely applied feature analysis/selection tool.</li>
+</ul>
+<h3 id="random-forest">Random Forest</h3>
+<p>Ensemble model of CART built with <a href="https://alan-turing-institute.github.io/MLJ.jl/">MLJ</a>.</p>
+<ul>
+<li>100 CART per model</li>
+<li>bagging ratio = 0.8</li>
+</ul>
+<aside><ol class="aside-footnotes"><li id="fn8"><p>mean squared error</p></li></ol></aside></section></section>
+<section>
+<section id="results-discussion" class="title-slide slide level1 center">
+<h1>Results &amp; Discussion</h1>
+
+</section>
+<section id="effectiveness-of-random-forest-in-swc-estimation" class="slide level2 scrollable">
+<h2>Effectiveness of Random Forest in SWC Estimation</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="Fig_Timeseries_every_depth_TimeSeriesCV_with_P.png"></p>
+</div>
+<div class="quarto-layout-panel quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p><img data-src="Fig_lossMAE_every_depthxfold_TimeSeriesCV.png"></p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<ul>
+<li>Model failed when transiting from dry to wet season (large MAE in <span class="math inline">\(8_{th}\)</span> fold for SWC of depths <span class="math inline">\(\geq 70\)</span> cm)</li>
+<li>Model failed to give predictions that are not in the training data (large MAE in <span class="math inline">\(3_{th}\)</span> fold for SWC of depths <span class="math inline">\(&gt; 10\)</span> cm)</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>For the rest of models, MAE <span class="math inline">\(\leq 4 \% (V/V)\)</span></p>
+<ul>
+<li>Overestimating SWC by 4 % for SWC at 10 cm results in an 8 mm or around 7.2 tons of water deficit per 0.1 hectare farmland; 7.2 tons is 7.2 ‰ of water demand for rice per 0.1 hectare, while the water demands of soybeans and wheat are <span class="math inline">\(\frac{1}{2}\)</span> and <span class="math inline">\(\frac{1}{10}\)</span> of that for rice, respectively.</li>
+<li>It indicates that <strong>the continuous estimation error of more than 20 days may start to influence rice production</strong>, which manifests the value of the estimated SWC information in this study.</li>
+</ul>
+</section>
+<section id="making-finer-and-more-stable-prediction-with-random-forest" class="slide level2 scrollable">
+<h2>Making finer and more stable prediction with Random Forest</h2>
+<p>MAE of ten sets of input feature (From left to right of the x axis)</p>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="MAE_forest_scatter.png"></p>
+</div>
+<div class="quarto-layout-panel quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<blockquote>
+<p>[1] without <em>hour</em></p>
+<p>[2] without <em>wind speed</em></p>
+<p>[3] without <em>solar radiation</em></p>
+<p>[4] without <em>humidity</em></p>
+<p>[5] without <em>pressure</em></p>
+<p>[6] without <em>air temperature</em></p>
+<p>[7] without <em>precipitation</em></p>
+<p>[8] without <em>AP parameters</em></p>
+<p>[9] with all parameters</p>
+<p>[10] with only AP and P parameters</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li>comparing the results with CART and Random Forest</li>
+<li>result shows minor but comprehensive improvements for all feature sets</li>
+</ul>
+</section>
+<section id="underlying-hydrodynamics-revealed-by-cart" class="slide level2 scrollable">
+<h2>Underlying hydrodynamics revealed by CART</h2>
+<h3 id="importance-of-input-features">Importance of input features</h3>
+<p>Assessing responsiveness of SWC to precipitation using TDNI and TNNS</p>
+<ul>
+<li><em>TDNI</em>: Total Decrease in Node Impurity</li>
+<li><em>TNNS</em>: Total Number of Node Splits</li>
+</ul>
+<blockquote>
+<p><em>AP &amp; P parameters</em>: Accumulated Precipitation (10-minutes, 1-hr, 12-hr, 1-day, 2-day, 3-day)</p>
+<p><em>NP parameters</em>: temperature, humidity, pressure, solar radiation, wind speed</p>
+</blockquote>
+<!-- 
+![](ManyImportance_by_APP_NP.png)
+
+Low TDNI of AP & P in dry season 
+
+- In wet season, SWC of all depths response promptly to small rainfalls
+- In dry season, SWC of deeper depths barely response to small rainfalls
+
+High TNNS of NP for all seasons
+
+- In wet season, NP parameters help in making finer predictions (near leaf)
+- In dry season, NP parameters makes critical decisions in a tree (near root) -->
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="ManyImportance_by_APP_NP.png"></p>
+</div>
+<div class="quarto-layout-panel quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p>Low TDNI of AP &amp; P in dry season</p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<ul>
+<li>In wet season, SWC of all depths response promptly to small rainfalls</li>
+<li>In dry season, SWC of deeper depths barely response to small rainfalls</li>
+</ul>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<p>High TNNS of NP for all seasons</p>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<ul>
+<li>In wet season, NP parameters help in making finer predictions (near leaf)</li>
+<li>In dry season, NP parameters makes critical decisions in a tree (near root)</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="swc-responsiveness-inferred-by-in-situ-evidences">SWC responsiveness inferred by in-situ evidences</h3>
+<p>We examine the results of feature analysis using CART’s feature importance metrics:</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>(A wet event)</p>
+<p><img data-src="SWC_wet_event.png"></p>
+<ul>
+<li>SWC of deeper depths saturate faster</li>
+</ul>
+</div><div class="column" style="width:60%;">
+<p>(A long drying event)</p>
+<p><img data-src="SWC_dry_event.png"></p>
+<ul>
+<li>Evapotranspiration affects more on SWC of shallow depths</li>
+</ul>
+</div>
+</div>
+<p>From the rock core samples:</p>
+<p><img data-src="Fig_rock_sample2.png" style="width:70.0%"></p>
+<ul>
+<li>fine grains in the topsoil (<span class="math inline">\(\leq 10 cm\)</span>) ➡️ High water retention ability</li>
+<li>coarse grain in the middle layer (<span class="math inline">\(30 - 70\)</span> cm) ➡️ Preferential flow in the mid-layer</li>
+</ul>
+</section>
+<section id="twaiswcf.jl" class="slide level2 scrollable" data-preview-link="true">
+<h2><a href="https://okatsn.github.io/TWAISWCF/dev/">TWAISWCF.jl</a></h2>
+<ul>
+<li>A Framework for soil-water content estimation &amp; forecasting, in compatible with <a href="https://alan-turing-institute.github.io/MLJ.jl/">MLJ</a> and <a href="https://dataframes.juliadata.org/stable/">DataFrames.jl</a>.</li>
+<li>A TWAI<span class="math inline">\(^1\)</span> subproject funded by NSTC<span class="math inline">\(^2\)</span></li>
+</ul>
+<blockquote>
+<p><span class="math inline">\(1.\)</span> TaiWan AI-based Management Strategy, for Earth and Environmental Disasters</p>
+<p><span class="math inline">\(2.\)</span> National Science and Technology Council</p>
+</blockquote>
+<ul>
+<li><img data-src="Fig_TWAISWCF_overview.png"></li>
+</ul>
+<h3 id="aims">Aims</h3>
+<ul>
+<li>Soil-water content (SWC) estimation for agricultural purposes</li>
+</ul>
+<h3 id="current-status">Current status</h3>
+<ul>
+<li>Nowcasts of SWC with acceptable error levels using readily available atmospheric parameters</li>
+<li>Only single site</li>
+</ul>
+</section></section>
+<section>
+<section id="conclusion" class="title-slide slide level1 center">
+<h1>Conclusion</h1>
+
+</section>
+<section id="brief-summary" class="slide level2 scrollable">
+<h2>Brief summary</h2>
+<ul>
+<li>CART alone provides SWC predictions with acceptable error for some agricultural purposes.</li>
+<li>Random Forest brings minor but comprehensive improvements.</li>
+<li>Feature importance analysis can be used to quantify the responsiveness of SWC to specific meteorological parameters.</li>
+</ul>
+</section>
+<section id="future-work" class="slide level2">
+<h2>Future work</h2>
+<ul>
+<li>Using three-day rainfall forecast</li>
+<li>Joint-station SWC estimation</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>Resources for this subject of TWAI:
+<ul>
+<li><a href="https://ncuihoswiselab.wixsite.com/twai-swcpredi">Introduction and demonstration</a></li>
+<li><a href="http://203.145.218.18:3000/">Prototype of interactive UI for SWC prediction</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="references" class="slide level2 appendix smaller scrollable">
+<h2>References</h2>
+<!-- A page of no title -->
+<h3 id="acknowledgement">Acknowledgement</h3>
+<p>The authors of the manuscript gratefully acknowledge the laboratories providing valuable data, namely the Surface Hydrology Lab., Aerosol and Cloud Lab., and Planetary Boundary Layer and Air Pollution Lab. of National Central University. The authors also would like to express their gratitude to the National Science and Technology Council (R.O.C) for providing funding for this research through grant number MOST 110-2634-F-008-008 and 111-2634-F-008-001.</p>
+<h3 id="appendix">Appendix</h3>
+<ul>
+<li><a href="https://okatsn.github.io/COSCUP_2023_Slides/about_twaiswcf/#/application-of-julia-in-the-study" data-preview-link="true">Application of Julia in the Study</a></li>
+</ul>
+<h3 id="references-1">References</h3>
+<div class="footer" style="font-size: 210%;">
+<p>Thank you for listening</p>
+</div>
+
+<img src="Fig_logo_bar_ncu.png" class="slide-logo r-stretch"><div class="footer footer-default">
+
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-aldabaMicrostructuredOpticalFiber2018" class="csl-entry" role="listitem">
+Aldaba, A. Lopez, D. Lopez-Torres, M. A. Campo-Bescós, J. J. López, D. Yerro, C. Elosua, F. J. Arregui, et al. 2018. <span>“Microstructured Optical Fiber Sensor for Soil Moisture Measurements.”</span> In <em>26th <span>International Conference</span> on <span>Optical Fiber Sensors</span> (2018), Paper <span>WF41</span></em>, WF41. <span>Optica Publishing Group</span>. <a href="https://doi.org/10.1364/OFS.2018.WF41">https://doi.org/10.1364/OFS.2018.WF41</a>.
+</div>
+<div id="ref-bittelliMeasuringSoilWater2010" class="csl-entry" role="listitem">
+Bittelli, Marco. 2010. <span>“Measuring <span>Soil Water Potential</span> for <span>Water Management</span> in <span>Agriculture</span>: <span>A Review</span>.”</span> <em>Sustainability</em> 2 (5): 1226–51. <a href="https://doi.org/10.3390/su2051226">https://doi.org/10.3390/su2051226</a>.
+</div>
+<div id="ref-Brunet2010MonitoringSW" class="csl-entry" role="listitem">
+Brunet, Pascal, Rémi Clément, and Christophe Bouvier. 2010. <span>“Monitoring Soil Water Content and Deficit Using Electrical Resistivity Tomography (ERT) – a Case Study in the Cevennes Area, France.”</span> <em>Journal of Hydrology</em> 380: 146–53. <a href="https://api.semanticscholar.org/CorpusID:128434141">https://api.semanticscholar.org/CorpusID:128434141</a>.
+</div>
+<div id="ref-Cosenza2016IndirectDO" class="csl-entry" role="listitem">
+Cosenza, Philippe. 2016. <span>“Indirect Determination of Soil Water Content.”</span> In. <a href="https://api.semanticscholar.org/CorpusID:3932194">https://api.semanticscholar.org/CorpusID:3932194</a>.
+</div>
+<div id="ref-Dawson2017BoreholeNM" class="csl-entry" role="listitem">
+Dawson, Cian B., Frederick D. Day‐Lewis, Carole D. Johnson, John W. Lane, Judy Robinson, and Lee D. Slater. 2017. <span>“Borehole Nuclear Magnetic Resonance (NMR): A Valuable Tool for Environmental Site Management.”</span> In. <a href="https://api.semanticscholar.org/CorpusID:135163659">https://api.semanticscholar.org/CorpusID:135163659</a>.
+</div>
+<div id="ref-Sparks2022AReviewTDR" class="csl-entry" role="listitem">
+He, Hailong, Kailin Aogu, Min Li, Jinghui Xu, Wenyi Sheng, Scott B. Jones, Juan D. González-Teruel, et al. 2021. <span>“Chapter Three - a Review of Time Domain Reflectometry (TDR) Applications in Porous Media.”</span> In, edited by Donald L. Sparks, 168:83–155. Advances in Agronomy. Academic Press. https://doi.org/<a href="https://doi.org/10.1016/bs.agron.2021.02.003">https://doi.org/10.1016/bs.agron.2021.02.003</a>.
+</div>
+<div id="ref-hendricksNuclearMagneticResonance1999" class="csl-entry" role="listitem">
+J. Hendricks, T. Yao, and A. Kearns. 1999. <span>“Nuclear Magnetic Resonance Imaging of Water Content in the Subsurface.”</span> DOE/ER/14732, 750970. <a href="https://doi.org/10.2172/750970">https://doi.org/10.2172/750970</a>.
+</div>
+<div id="ref-reynoldsGravimetricMethodSoil1970" class="csl-entry" role="listitem">
+Reynolds, S. G. 1970. <span>“The Gravimetric Method of Soil Moisture Determination <span>Part I A</span> Study of Equipment, and Methodological Problems.”</span> <em>Journal of Hydrology</em> 11 (3): 258–73. <a href="https://doi.org/10.1016/0022-1694(70)90066-1">https://doi.org/10.1016/0022-1694(70)90066-1</a>.
+</div>
+<div id="ref-Robinson2023AReviewTDR" class="csl-entry" role="listitem">
+Robinson, D. A., S. B. Jones, J. M. Wraith, D. Or, and S. P. Friedman. 2003. <span>“<span class="nocase">A Review of Advances in Dielectric and Electrical Conductivity Measurement in Soils Using Time Domain Reflectometry</span>.”</span> <em>Vadose Zone Journal</em> 2 (4): 444–75. <a href="https://doi.org/10.2113/2.4.444">https://doi.org/10.2113/2.4.444</a>.
+</div>
+<div id="ref-shekharSoilMoistureProfile2017" class="csl-entry" role="listitem">
+Shekhar, Shashi, Manish Kumar, Anuradha Kumari, and S. K. Jain. 2017. <span>“Soil <span>Moisture Profile Analysis Using Tensiometer</span> Under <span>Different Discharge Rates</span> of <span>Drip Emitter</span>.”</span> <em>International Journal of Current Microbiology and Applied Sciences</em> 6 (11): 908–17. <a href="https://doi.org/10.20546/ijcmas.2017.611.106">https://doi.org/10.20546/ijcmas.2017.611.106</a>.
+</div>
+<div id="ref-SHEN2019OptimizedInsideOutNMR" class="csl-entry" role="listitem">
+Shen, Sheng, Pan Guo, Jiamin Wu, Ye Ding, Fangge Chen, Fanqin Meng, and Zheng Xu. 2019. <span>“Optimized Inside-Out Magnetic Resonance Probe for Soil Moisture Measuring in Situ.”</span> <em>Journal of Magnetic Resonance</em> 307: 106565. https://doi.org/<a href="https://doi.org/10.1016/j.jmr.2019.07.052">https://doi.org/10.1016/j.jmr.2019.07.052</a>.
+</div>
+<div id="ref-sunDevelopmentApplicationFiberOptic2022" class="csl-entry" role="listitem">
+Sun, Meng-Ya, Bin Shi, Jun-Yi Guo, Hong-Hu Zhu, Hong-Tao Jiang, Jie Liu, Guang-Qing Wei, and Xing Zheng. 2022. <span>“Development and <span>Application</span> of <span>Fiber-Optic Sensing Technology</span> for <span>Monitoring Soil Moisture Field</span>.”</span> <em>Frontiers in Sensors</em> 2.
+</div>
+<div id="ref-ncusurfacehydrologylabAerialView" class="csl-entry" role="listitem">
+Surface Hydrology Lab. of NCU. n.d. <span>“Aerial View of <span>NCU Atmospheric</span> and <span>Hydrological Observatory</span>.”</span> https://hydro.ihs.ncu.edu.tw/.
+</div>
+<div id="ref-Tokov2019MeasurementOV" class="csl-entry" role="listitem">
+Toková, Lucia, Duan Igaz, and Elena Aydın. 2019. <span>“Measurement of Volumetric Water Content by Gravimetric and Time Domain Reflectometry Methods at Field Experiment with Biochar and n Fertilizer.”</span> <em>Acta Horticulturae Et Regiotecturae</em> 22: 61–64. <a href="https://api.semanticscholar.org/CorpusID:207961140">https://api.semanticscholar.org/CorpusID:207961140</a>.
+</div>
+<div id="ref-ichiehEffectsEvapotranspirationInfiltration2019" class="csl-entry" role="listitem">
+Tseng, I-Chieh. 2019. <span>“<span>Effects of evapotranspiration and infiltration on variations in soil moisture and changes in groundwater levels</span>.”</span> <em>National Digital Library of Theses and Dissertations in Taiwan</em>. <a href="https://hdl.handle.net/11296/q37cpq">https://hdl.handle.net/11296/q37cpq</a>.
+</div>
+</div>
+</section></section>
+
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="index_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="index_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="index_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="index_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="index_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="index_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="index_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': true,
+'smaller': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // Parallax background image
+        parallaxBackgroundImage: 'background1.png', // e.g. "'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg'"
+
+        // Parallax background size
+        parallaxBackgroundSize: '1920px 1200px', // CSS syntax, e.g. "2100px 900px"
+
+        // Amount to move parallax background (horizontal and vertical) on slide change
+        // Number, e.g. 100
+        parallaxBackgroundHorizontal: 20,
+
+        parallaxBackgroundVertical: 20,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+      function tippyHover(el, contentFn) {
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        };
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          return note.innerHTML;
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
