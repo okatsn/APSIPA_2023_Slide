@@ -29,7 +29,7 @@ format:
         height: 900
         theme: [simple,custom.scss] # https://quarto.org/docs/presentations/revealjs/#themes
         logo: Fig_logo_bar_ncu.png
-        preview-links: auto
+        preview-links: true
         slide-number: true
         toc: true
         toc-title: Outline
@@ -38,6 +38,7 @@ format:
         parallax-background-size: "1920px 1200px"
         parallax-background-horizontal: 20
         parallax-background-vertical: 20
+        chalkboard: true
 
 ---
 
@@ -116,17 +117,15 @@ Therefore, physically based numerical models and data-driven models are required
 
 ## In this study
 
-We use Classification And Regression Tree (CART), aiming for
-
-- investigating the feasibility of using the Classification and Regression Tree (CART) algorithm in SWC estimation
-- training and validation of CART models using **meteorological data**^[such as precipitation, air temperature and pressure] from a grassland terrain in northern Taiwan
+- We investigate the feasibility of using the Classification and Regression Tree (CART) algorithm in SWC estimation. 
+- CART models are trained using **meteorological data**^[such as precipitation, air temperature and pressure] from a grassland terrain in northern Taiwan
 
 ### Why we choose CART
 
-- In soil water estimation, the top-performing models are mostly 
-  - Artificial Neural Network (ANN) 
+- In SWC estimation, the top-performing models are mostly 
+  - Artificial Neural Network
   - CART-based models, such as Random Forest, Gradient Boosted Trees
-- Intrinsic ability for feature selection
+- Intrinsic ability of feature selection
 - Provide inherent feature importance metrics such as impurity decrease
 
 <!-- It is often chosen as the weak learner for ensemble learning, such as random forests, and gradient boosting machines, such as XGBoost \citep{ChenXGBoost2016}, which have dominated Kaggle competitions in recent years \citep{bentejacComparativeAnalysisGradient2021}. -->
@@ -319,7 +318,6 @@ High TNNS of NP for all seasons
 
 ### SWC responsiveness inferred by in-situ evidences 
 
-We examine the results of feature analysis using CART's feature importance metrics:
 
 ::::{.columns}::::
 :::{.column width='40%'}
@@ -354,6 +352,19 @@ From the rock core samples:
 
 
 
+# Conclusion
+
+## Brief summary {.scrollable}
+
+- CART alone provides SWC predictions with acceptable error for some agricultural purposes.
+- Random Forest provides comprehensive improvements comparing to CART.
+- CART's intrinsic feature importance metrics can be used to assess the responsiveness of SWC to specific meteorological parameters.
+- The results of feature importance analysis reflect the underground hydrodynamics and the seasonal variation of the evapotranspiration mechanism of the site.
+
+
+
+
+
 ## [TWAISWCF.jl](https://okatsn.github.io/TWAISWCF/dev/) {.scrollable preview-link="true"}
 
 - A Framework for soil-water content estimation & forecasting, in compatible with [MLJ](https://alan-turing-institute.github.io/MLJ.jl/) and [DataFrames.jl](https://dataframes.juliadata.org/stable/).
@@ -365,40 +376,15 @@ From the rock core samples:
 
 - ![](Fig_TWAISWCF_overview.png)
 
-
-### Aims
-
-
-
-- Soil-water content (SWC) estimation for agricultural purposes
-
-### Current status
-
-- Nowcasts of SWC with acceptable error levels using readily available atmospheric parameters
-- Only single site
-
-
-
-
-
-
-
-
-# Conclusion
-
-## Brief summary {.scrollable}
-
-- CART alone provides SWC predictions with acceptable error for some agricultural purposes.
-- Random Forest brings minor but comprehensive improvements.
-- Feature importance analysis can be used to quantify the responsiveness of SWC to specific meteorological parameters.
-
-
-
-
-## Future work
+### Future work
 
 - Using three-day rainfall forecast
 - Joint-station SWC estimation
+
+
+
+
+
 
 
 
@@ -415,7 +401,7 @@ From the rock core samples:
 
 
 
-## References {.appendix}
+## {.appendix}
 <!-- A page of no title -->
 
 ### Acknowledgement
@@ -428,11 +414,13 @@ The authors also would like to express their gratitude to the National Science a
 
 - [Application of Julia in the Study](https://okatsn.github.io/COSCUP_2023_Slides/about_twaiswcf/#/application-of-julia-in-the-study){preview-link="true"}
 
-
-### References
-
+- This slide is available on GitHub in [okatsn/APSIPA_2023_Slide](https://github.com/okatsn/APSIPA_2023_Slide)
 
 
-:::{.footer style="font-size: 210%;"}
+:::{.thankyou}
 Thank you for listening
 :::
+
+### Reference
+
+

@@ -59,6 +59,8 @@
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
@@ -423,14 +425,13 @@ Ming-Hsu Li
 <li><a href="#/effectiveness-of-random-forest-in-swc-estimation" id="/toc-effectiveness-of-random-forest-in-swc-estimation">Effectiveness of Random Forest in SWC Estimation</a></li>
 <li><a href="#/making-finer-and-more-stable-prediction-with-random-forest" id="/toc-making-finer-and-more-stable-prediction-with-random-forest">Making finer and more stable prediction with Random Forest</a></li>
 <li><a href="#/underlying-hydrodynamics-revealed-by-cart" id="/toc-underlying-hydrodynamics-revealed-by-cart">Underlying hydrodynamics revealed by CART</a></li>
-<li><a href="#/twaiswcf.jl" id="/toc-twaiswcf.jl">TWAISWCF.jl</a></li>
 </ul></li>
 <li><a href="#/conclusion" id="/toc-conclusion">Conclusion</a>
 <ul>
 <li><a href="#/brief-summary" id="/toc-brief-summary">Brief summary</a></li>
-<li><a href="#/future-work" id="/toc-future-work">Future work</a></li>
+<li><a href="#/twaiswcf.jl" id="/toc-twaiswcf.jl">TWAISWCF.jl</a></li>
 <li></li>
-<li><a href="#/references" id="/toc-references">References</a></li>
+<li><a href="#/section" id="/toc-section"></a></li>
 </ul></li>
 </ul>
 </nav>
@@ -475,7 +476,7 @@ I'm Tsung-Hsi, Wu (吳宗羲)
 <ul>
 <li>resistivity methods <sup>3</sup>, tension methods <sup>4</sup>, dielectric methods <sup>5</sup>, and fiber optic sensing <sup>6</sup></li>
 </ul>
-<aside><ol class="aside-footnotes"><li id="fn1"><p><span class="citation" data-cites="reynoldsGravimetricMethodSoil1970">Reynolds (<a href="#/references" role="doc-biblioref" onclick="">1970</a>)</span></p></li><li id="fn2"><p><span class="citation" data-cites="hendricksNuclearMagneticResonance1999">J. Hendricks, T. Yao, and A. Kearns (<a href="#/references" role="doc-biblioref" onclick="">1999</a>)</span>,<span class="citation" data-cites="Dawson2017BoreholeNM">Dawson et al. (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span>,<span class="citation" data-cites="SHEN2019OptimizedInsideOutNMR">Shen et al. (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span></p></li><li id="fn3"><p><span class="citation" data-cites="Brunet2010MonitoringSW">Brunet, Clément, and Bouvier (<a href="#/references" role="doc-biblioref" onclick="">2010</a>)</span></p></li><li id="fn4"><p><span class="citation" data-cites="bittelliMeasuringSoilWater2010">Bittelli (<a href="#/references" role="doc-biblioref" onclick="">2010</a>)</span>,<span class="citation" data-cites="shekharSoilMoistureProfile2017">Shekhar et al. (<a href="#/references" role="doc-biblioref" onclick="">2017</a>)</span></p></li><li id="fn5"><p><span class="citation" data-cites="Tokov2019MeasurementOV">Toková, Igaz, and Aydın (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span>,<span class="citation" data-cites="Sparks2022AReviewTDR">He et al. (<a href="#/references" role="doc-biblioref" onclick="">2021</a>)</span>,<span class="citation" data-cites="Robinson2023AReviewTDR">Robinson et al. (<a href="#/references" role="doc-biblioref" onclick="">2003</a>)</span></p></li><li id="fn6"><p><span class="citation" data-cites="Cosenza2016IndirectDO">Cosenza (<a href="#/references" role="doc-biblioref" onclick="">2016</a>)</span>,<span class="citation" data-cites="aldabaMicrostructuredOpticalFiber2018">Aldaba et al. (<a href="#/references" role="doc-biblioref" onclick="">2018</a>)</span>,<span class="citation" data-cites="sunDevelopmentApplicationFiberOptic2022">Sun et al. (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span></p></li></ol></aside></section>
+<aside><ol class="aside-footnotes"><li id="fn1"><p><span class="citation" data-cites="reynoldsGravimetricMethodSoil1970">Reynolds (<a href="#/section" role="doc-biblioref" onclick="">1970</a>)</span></p></li><li id="fn2"><p><span class="citation" data-cites="hendricksNuclearMagneticResonance1999">J. Hendricks, T. Yao, and A. Kearns (<a href="#/section" role="doc-biblioref" onclick="">1999</a>)</span>,<span class="citation" data-cites="Dawson2017BoreholeNM">Dawson et al. (<a href="#/section" role="doc-biblioref" onclick="">2017</a>)</span>,<span class="citation" data-cites="SHEN2019OptimizedInsideOutNMR">Shen et al. (<a href="#/section" role="doc-biblioref" onclick="">2019</a>)</span></p></li><li id="fn3"><p><span class="citation" data-cites="Brunet2010MonitoringSW">Brunet, Clément, and Bouvier (<a href="#/section" role="doc-biblioref" onclick="">2010</a>)</span></p></li><li id="fn4"><p><span class="citation" data-cites="bittelliMeasuringSoilWater2010">Bittelli (<a href="#/section" role="doc-biblioref" onclick="">2010</a>)</span>,<span class="citation" data-cites="shekharSoilMoistureProfile2017">Shekhar et al. (<a href="#/section" role="doc-biblioref" onclick="">2017</a>)</span></p></li><li id="fn5"><p><span class="citation" data-cites="Tokov2019MeasurementOV">Toková, Igaz, and Aydın (<a href="#/section" role="doc-biblioref" onclick="">2019</a>)</span>,<span class="citation" data-cites="Sparks2022AReviewTDR">He et al. (<a href="#/section" role="doc-biblioref" onclick="">2021</a>)</span>,<span class="citation" data-cites="Robinson2023AReviewTDR">Robinson et al. (<a href="#/section" role="doc-biblioref" onclick="">2003</a>)</span></p></li><li id="fn6"><p><span class="citation" data-cites="Cosenza2016IndirectDO">Cosenza (<a href="#/section" role="doc-biblioref" onclick="">2016</a>)</span>,<span class="citation" data-cites="aldabaMicrostructuredOpticalFiber2018">Aldaba et al. (<a href="#/section" role="doc-biblioref" onclick="">2018</a>)</span>,<span class="citation" data-cites="sunDevelopmentApplicationFiberOptic2022">Sun et al. (<a href="#/section" role="doc-biblioref" onclick="">2022</a>)</span></p></li></ol></aside></section>
 <section id="machine-learning-in-swc-measurement" class="slide level2 scrollable">
 <h2>Machine learning in SWC measurement</h2>
 <p>Due to economic and deployment reasons, in-situ SWC monitoring is generally spatially sparse. Therefore, physically based numerical models and data-driven models are required on one hand to fill gaps in SWC measurement instrumentation.</p>
@@ -497,19 +498,18 @@ I'm Tsung-Hsi, Wu (吳宗羲)
 </section>
 <section id="in-this-study" class="slide level2">
 <h2>In this study</h2>
-<p>We use Classification And Regression Tree (CART), aiming for</p>
 <ul>
-<li>investigating the feasibility of using the Classification and Regression Tree (CART) algorithm in SWC estimation</li>
-<li>training and validation of CART models using <strong>meteorological data</strong><sup>1</sup> from a grassland terrain in northern Taiwan</li>
+<li>We investigate the feasibility of using the Classification and Regression Tree (CART) algorithm in SWC estimation.</li>
+<li>CART models are trained using <strong>meteorological data</strong><sup>1</sup> from a grassland terrain in northern Taiwan</li>
 </ul>
 <h3 id="why-we-choose-cart">Why we choose CART</h3>
 <ul>
-<li>In soil water estimation, the top-performing models are mostly
+<li>In SWC estimation, the top-performing models are mostly
 <ul>
-<li>Artificial Neural Network (ANN)</li>
+<li>Artificial Neural Network</li>
 <li>CART-based models, such as Random Forest, Gradient Boosted Trees</li>
 </ul></li>
-<li>Intrinsic ability for feature selection</li>
+<li>Intrinsic ability of feature selection</li>
 <li>Provide inherent feature importance metrics such as impurity decrease</li>
 </ul>
 <!-- It is often chosen as the weak learner for ensemble learning, such as random forests, and gradient boosting machines, such as XGBoost \citep{ChenXGBoost2016}, which have dominated Kaggle competitions in recent years \citep{bentejacComparativeAnalysisGradient2021}. -->
@@ -542,13 +542,13 @@ I'm Tsung-Hsi, Wu (吳宗羲)
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="Fig_site_ncutower.png"></p>
-<figcaption><span class="citation" data-cites="ncusurfacehydrologylabAerialView">Surface Hydrology Lab. of NCU (<a href="#/references" role="doc-biblioref" onclick="">n.d.</a>)</span></figcaption>
+<figcaption><span class="citation" data-cites="ncusurfacehydrologylabAerialView">Surface Hydrology Lab. of NCU (<a href="#/section" role="doc-biblioref" onclick="">n.d.</a>)</span></figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="Fig_rock_sample.png"></p>
-<figcaption><span class="citation" data-cites="ichiehEffectsEvapotranspirationInfiltration2019">Tseng (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span></figcaption>
+<figcaption><span class="citation" data-cites="ichiehEffectsEvapotranspirationInfiltration2019">Tseng (<a href="#/section" role="doc-biblioref" onclick="">2019</a>)</span></figcaption>
 </figure>
 </div>
 </div>
@@ -720,7 +720,6 @@ High TNNS of NP for all seasons
 </div>
 </div>
 <h3 id="swc-responsiveness-inferred-by-in-situ-evidences">SWC responsiveness inferred by in-situ evidences</h3>
-<p>We examine the results of feature analysis using CART’s feature importance metrics:</p>
 <div class="columns">
 <div class="column" style="width:40%;">
 <p>(A wet event)</p>
@@ -742,6 +741,20 @@ High TNNS of NP for all seasons
 <li>fine grains in the topsoil (<span class="math inline">\(\leq 10 cm\)</span>) ➡️ High water retention ability</li>
 <li>coarse grain in the middle layer (<span class="math inline">\(30 - 70\)</span> cm) ➡️ Preferential flow in the mid-layer</li>
 </ul>
+</section></section>
+<section>
+<section id="conclusion" class="title-slide slide level1 center">
+<h1>Conclusion</h1>
+
+</section>
+<section id="brief-summary" class="slide level2 scrollable">
+<h2>Brief summary</h2>
+<ul>
+<li>CART alone provides SWC predictions with acceptable error for some agricultural purposes.</li>
+<li>Random Forest provides comprehensive improvements comparing to CART.</li>
+<li>CART’s intrinsic feature importance metrics can be used to assess the responsiveness of SWC to specific meteorological parameters.</li>
+<li>The results of feature importance analysis reflect the underground hydrodynamics and the seasonal variation of the evapotranspiration mechanism of the site.</li>
+</ul>
 </section>
 <section id="twaiswcf.jl" class="slide level2 scrollable" data-preview-link="true">
 <h2><a href="https://okatsn.github.io/TWAISWCF/dev/">TWAISWCF.jl</a></h2>
@@ -756,31 +769,7 @@ High TNNS of NP for all seasons
 <ul>
 <li><img data-src="Fig_TWAISWCF_overview.png"></li>
 </ul>
-<h3 id="aims">Aims</h3>
-<ul>
-<li>Soil-water content (SWC) estimation for agricultural purposes</li>
-</ul>
-<h3 id="current-status">Current status</h3>
-<ul>
-<li>Nowcasts of SWC with acceptable error levels using readily available atmospheric parameters</li>
-<li>Only single site</li>
-</ul>
-</section></section>
-<section>
-<section id="conclusion" class="title-slide slide level1 center">
-<h1>Conclusion</h1>
-
-</section>
-<section id="brief-summary" class="slide level2 scrollable">
-<h2>Brief summary</h2>
-<ul>
-<li>CART alone provides SWC predictions with acceptable error for some agricultural purposes.</li>
-<li>Random Forest brings minor but comprehensive improvements.</li>
-<li>Feature importance analysis can be used to quantify the responsiveness of SWC to specific meteorological parameters.</li>
-</ul>
-</section>
-<section id="future-work" class="slide level2">
-<h2>Future work</h2>
+<h3 id="future-work">Future work</h3>
 <ul>
 <li>Using three-day rainfall forecast</li>
 <li>Joint-station SWC estimation</li>
@@ -796,19 +785,20 @@ High TNNS of NP for all seasons
 </ul></li>
 </ul>
 </section>
-<section id="references" class="slide level2 appendix smaller scrollable">
-<h2>References</h2>
+<section id="section" class="slide level2 appendix smaller scrollable">
+<h2></h2>
 <!-- A page of no title -->
 <h3 id="acknowledgement">Acknowledgement</h3>
 <p>The authors of the manuscript gratefully acknowledge the laboratories providing valuable data, namely the Surface Hydrology Lab., Aerosol and Cloud Lab., and Planetary Boundary Layer and Air Pollution Lab. of National Central University. The authors also would like to express their gratitude to the National Science and Technology Council (R.O.C) for providing funding for this research through grant number MOST 110-2634-F-008-008 and 111-2634-F-008-001.</p>
 <h3 id="appendix">Appendix</h3>
 <ul>
-<li><a href="https://okatsn.github.io/COSCUP_2023_Slides/about_twaiswcf/#/application-of-julia-in-the-study" data-preview-link="true">Application of Julia in the Study</a></li>
+<li><p><a href="https://okatsn.github.io/COSCUP_2023_Slides/about_twaiswcf/#/application-of-julia-in-the-study" data-preview-link="true">Application of Julia in the Study</a></p></li>
+<li><p>This slide is available on GitHub in <a href="https://github.com/okatsn/APSIPA_2023_Slide">okatsn/APSIPA_2023_Slide</a></p></li>
 </ul>
-<h3 id="references-1">References</h3>
-<div class="footer" style="font-size: 210%;">
+<div class="thankyou">
 <p>Thank you for listening</p>
 </div>
+<h3 id="reference">Reference</h3>
 
 <img src="Fig_logo_bar_ncu.png" class="slide-logo r-stretch"><div class="footer footer-default">
 
@@ -872,6 +862,7 @@ Tseng, I-Chieh. 2019. <span>“<span>Effects of evapotranspiration and infiltrat
   <script src="index_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="index_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="index_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -887,13 +878,14 @@ Tseng, I-Chieh. 2019. <span>“<span>Effects of evapotranspiration and infiltrat
       // https://revealjs.com/config/
       Reveal.initialize({
 'controlsAuto': true,
-'previewLinksAuto': true,
+'previewLinksAuto': false,
 'smaller': false,
 'pdfSeparateFragments': false,
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -1016,7 +1008,7 @@ Tseng, I-Chieh. 2019. <span>“<span>Effects of evapotranspiration and infiltrat
         hideCursorTime: 5000,
 
         // Opens links in an iframe preview overlay
-        previewLinks: false,
+        previewLinks: true,
 
         // Transition style (none/fade/slide/convex/concave/zoom)
         transition: 'none',
@@ -1076,7 +1068,7 @@ Tseng, I-Chieh. 2019. <span>“<span>Effects of evapotranspiration and infiltrat
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
 
           RevealMath,
           RevealNotes,
